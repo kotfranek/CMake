@@ -1,0 +1,2 @@
+# CMake
+A CMake example
