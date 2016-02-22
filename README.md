@@ -13,6 +13,7 @@ sudo ./configure.sh
 This script will create a new output directory, named *build* by default, to enable an _out-of-place_ build. CMake will generate a new makefile. Next step it will proceed is project compilation and linking, that results in two binaries created:
 - cmake-example-library.so
 - cmake-demo
+
 Those two, and a ::sample::DemoClass header file will be then integrated into the filesystem structure. This process is called installation.
 
 ### Running the executable
