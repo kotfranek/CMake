@@ -18,9 +18,10 @@ Next step it will proceed is project compilation and linking, that results in tw
 
 Those two, and a ```sample/DemoClass.h``` header file will be then integrated into the file system structure. This process is called installation.
 On Linux distributions this will, by default, be:
-- /usr/local/bin for executables
-- /usr/local/lib for libraries (static and shared)
-- /usr/local/include/<project_name> for headers
+
+|/usr/local/bin|for executables|
+|/usr/local/lib|for libraries (static and shared)|
+|/usr/local/include/<project_name>|for headers|
 
 The default location is OS dependent and can be also modified.
 
