@@ -21,8 +21,8 @@ makeEnv()
 {
     printf "%s\n" "-- Create the build directory ${BUILD_DIR}..."
     # External Build: outside of the project structure
-    mkdir -p "$BUILD_DIR"
-    cd "$BUILD_DIR"
+    mkdir -p "${BUILD_DIR}"
+    cd "${BUILD_DIR}"
 
     printf "%s\n" "-- Generate build environment from CMake input..."
     # Create the makefile based on the CMakeLists.txt up-dir
@@ -48,8 +48,8 @@ installProject()
 installQuery()
 {
     while true; do
-        read -p "-- $QUERY_INSTALL (y/n) " yn
-        case $yn in
+        read -p "-- ${QUERY_INSTALL} (y/n) " yn
+        case ${yn} in
             [Yy]* ) installProject; break;;
             [Nn]* ) break;;
             * ) printf "%s\n" "-- Invalid input, use Y(es) or N(o)";;
@@ -61,7 +61,7 @@ installQuery()
 cleanUp()
 {
     # Change the directory back
-    cd  "$CURRENT_DIR"
+    cd  "${CURRENT_DIR}"
 }
 
 # Script body
