@@ -12,7 +12,12 @@ readonly BUILD_DIR="build"
 readonly CURRENT_DIR=$(pwd)
 
 # Installation query phrase
-readonly QUERY_INSTALL="Do you wish to install project ${PRJ_NAME}?"
+readonly QUERY_INSTALL="Do you wish to install project '${PRJ_NAME}' (requires root privileges)?"
+
+### Global Variables ##########################################################
+
+# Make all command result
+GLOB_MAKE_ALL_RESULT=-1
 
 ### Functions #################################################################
 
@@ -34,6 +39,7 @@ buildProject()
 {
     # Make the targets
     make all
+    GLOB_MAKE_ALL_RESULT=${?}
 }
 
 # Project installation
@@ -70,7 +76,11 @@ main()
     printf "%s\n" "Configure project '${PRJ_NAME}'"
     makeEnv
     buildProject
-    installQuery
+    if [ ${GLOB_MAKE_ALL_RESULT} -eq 0 ]; then
+        installQuery
+    else
+        printf "Building '%s' failed!\n" "${PRJ_NAME}"
+    fi
     cleanUp
 }
 
