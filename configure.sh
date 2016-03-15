@@ -14,12 +14,60 @@ readonly CURRENT_DIR=$(pwd)
 # Installation query phrase
 readonly QUERY_INSTALL="Do you wish to install project '${PRJ_NAME}' (requires root privileges)?"
 
+readonly USAGE_INFORMATION="Configure Script for CMake project '${PRJ_NAME}'
+
+USAGE: 
+
+configure.sh [OPTIONS]
+
+OPTIONS:
+
+-b | --build <build_type> select build configuration '${BUILD_RELEASE}' or '${BUILD_DEBUG}'
+-h | --help               print this message
+"
+
+# Build configuration Release
+readonly BUILD_RELEASE="Release"
+
+# Build configuration Debug
+readonly BUILD_DEBUG="Debug"
+
 ### Global Variables ##########################################################
 
 # Make all command result
 GLOB_MAKE_ALL_RESULT=-1
 
+# CMake G command result
+GLOB_CMAKE_G_RESULT=-1
+
+# CMake build configuration default setting
+GLOB_CMAKE_BUILD_CFG="${BUILD_RELEASE}"
+
 ### Functions #################################################################
+
+# Print usage information
+usage()
+{
+    printf "%s\n" "${USAGE_INFORMATION}"
+}
+
+# Check the Command Line Arguments
+checkArgs()
+{
+    while [ "${1}" != "" ]; do
+        case $1 in
+            -b | --build )          shift
+                                    GLOB_CMAKE_BUILD_CFG=${1}
+                                    ;;
+            -h | --help )           usage
+                                    exit
+                                    ;;
+            * )                     usage
+                                    exit 1
+        esac
+        shift
+    done
+}
 
 # Create the CMake build environment
 makeEnv()
@@ -31,7 +79,8 @@ makeEnv()
 
     printf "%s\n" "-- Generate build environment from CMake input..."
     # Create the makefile based on the CMakeLists.txt up-dir
-    cmake -G "Unix Makefiles" ..
+    cmake -DCMAKE_BUILD_TYPE="${GLOB_CMAKE_BUILD_CFG}" -G "Unix Makefiles" ..
+    GLOB_CMAKE_G_RESULT=${?}
 }
 
 # Build project
@@ -73,13 +122,18 @@ cleanUp()
 # Script body
 main()
 {
+    checkArgs "${@}"
     printf "%s\n" "Configure project '${PRJ_NAME}'"
     makeEnv
-    buildProject
-    if [ ${GLOB_MAKE_ALL_RESULT} -eq 0 ]; then
-        installQuery
+    if [ ${GLOB_CMAKE_G_RESULT} -eq 0 ]; then
+        buildProject
+        if [ ${GLOB_MAKE_ALL_RESULT} -eq 0 ]; then
+            installQuery
+        else
+            printf "Building '%s' failed!\n" "${PRJ_NAME}"
+        fi
     else
-        printf "Building '%s' failed!\n" "${PRJ_NAME}"
+        printf "Configuring '%s' failed!\n" "${PRJ_NAME}"
     fi
     cleanUp
 }
